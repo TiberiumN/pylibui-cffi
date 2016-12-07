@@ -1,15 +1,14 @@
 language: python
 
 python:
-  - "2.6"
   - "2.7"
   - "3.2"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "3.5-dev"
-  - "3.6-dev"
-  - "nightly"
+  #- "3.3"
+  #- "3.4"
+  #- "3.5"
+  #- "3.5-dev"
+  #- "3.6-dev"
+  #- "nightly"
 
 sudo: required
 
@@ -20,13 +19,12 @@ before_install:
   - sudo curl -sSL https://packagecloud.io/waghanza/plunder/gpgkey | sudo apt-key add -
   - sudo apt-get -qq update
   - sudo apt-get -qy install libui libgtk-3-0
+  - sudo ln -sfv `readlink -f `sudo find / -type l -name libui.so`` `python -c "import sysconfig;print(sysconfig.get_config_var('LIBDIR'))"`
 
-install: sudo pip install tox-travis coverage pep8
+install: sudo pip install tox-travis coverage
 
 script:
-  - [ `which python` ] && python -m unittest
-  - [ `which python3` ] && python3 -m unittest
-  - python3 `which pep8`
+  - python -m unittest
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
