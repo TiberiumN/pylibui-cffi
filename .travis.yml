@@ -18,13 +18,12 @@ before_install:
   - echo 'deb https://packagecloud.io/waghanza/plunder/ubuntu/ trusty main' | sudo tee /etc/apt/sources.list.d/plunder.list
   - sudo curl -sSL https://packagecloud.io/waghanza/plunder/gpgkey | sudo apt-key add -
   - sudo apt-get -qq update
-  - sudo apt-get -qy install libui libgtk-3-0
-  - sudo ln -sfv `readlink -f `sudo find / -type l -name libui.so`` `python -c "import sysconfig;print(sysconfig.get_config_var('LIBDIR'))"`
+  - sudo apt-get -qy install libui
 
 install: sudo pip install tox-travis coverage
 
 script:
-  - python -m unittest
+  - [ `python -c "import sys;print(sys.version[0])"` == "2" ] && python -m unittest || python3 -m unittest
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
