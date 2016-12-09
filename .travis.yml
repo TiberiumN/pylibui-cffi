@@ -1,9 +1,11 @@
 addons:
   apt:
     sources:
-    - libui
     - sourceline: 'deb https://packagecloud.io/waghanza/plunder/ubuntu/ trusty main'
       key_url: 'https://packagecloud.io/waghanza/plunder/gpgkey'
+    packages:
+      - libui
+      - xvfb
 
 dist: trusty
 
@@ -14,18 +16,19 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
-  - "3.5"
-  - "3.5-dev"
-  - "3.6-dev"
-  - "nightly"
+  #- "3.5"
+  #- "3.5-dev"
+  #- "3.6-dev"
+  #- "nightly"
 
 sudo: required
+
 
 install: sudo pip install tox-travis coverage
 
 script:
-  - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && echo 'py2' || echo 'py'"
-  - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && python -m unittest || python3 -m unittest"
+  - "[ `python -c 'import sys;print(sys.version[0])'` == '3' ] && sudo python3 scripts/fix_travis.py || true"
+  - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && python -m unittest || xvfb-run python3 -m unittest"
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
