@@ -1,3 +1,4 @@
 dependencies:
   pre:
+    - sudo apt-get -qq update
     - sudo apt-get install apt-transport-https curl libgtk3
