@@ -14,14 +14,13 @@ sudo: required
 
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get -qy install apt-transport-https curl
+  - sudo apt-get -qy install apt-transport-https curl libgtk3
   - echo 'deb https://packagecloud.io/waghanza/plunder/ubuntu/ trusty main' | sudo tee /etc/apt/sources.list.d/plunder.list
   - sudo curl -sSL https://packagecloud.io/waghanza/plunder/gpgkey | sudo apt-key add -
   - sudo apt-get -qq update
   - sudo apt-get -qy install libui
 
 install: sudo pip install tox-travis coverage
-
 script:
   - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && echo 'py2' || echo 'py'"
   - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && python -m unittest || python3 -m unittest"
