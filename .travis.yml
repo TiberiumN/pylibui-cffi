@@ -23,6 +23,7 @@ before_install:
 install: sudo pip install tox-travis coverage
 
 script:
+  - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && echo 'py2' || echo 'py'"
   - "[ `python -c 'import sys;print(sys.version[0])'` == '2' ] && python -m unittest || python3 -m unittest"
 
 after_success:
