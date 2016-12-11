@@ -12,7 +12,7 @@ from pylibui.controls import Window
 
 class MyWindow(Window):
 
-    def onClose(self, data):
+    def on_close(self, data):
         super().onClose(data)
         app.stop()
 
@@ -20,7 +20,7 @@ class MyWindow(Window):
 app = App()
 
 window = MyWindow('Window', 800, 600)
-window.setMargined(True)
+window.margined = True
 window.show()
 
 app.start()
