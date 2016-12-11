@@ -3,7 +3,6 @@
 Python3 wrapper for [libui](https://github.com/andlabs/libui/). It uses ctypes 
 to interface with the libui shared library.
 
-
 ## Usage
 
 ```python    
@@ -49,7 +48,23 @@ to pylibui/libui. Now, you can use pylibui:
 
     $ python3
     >>> import pylibui
+## Binding generation
+If you want to re-generate bindings for your platform or for newer version of libui,
+you need to install 'pycparser'.
 
+1. Pre-compile ui.h header to ui_compiled.h. For example: 
+
+  ```gcc -E ui.h -o ui_compiled.h```
+
+2. Run scripts/bindings.py. If there's any failures, send me an e-mail or fill an issue. For example:
+
+  ```python3 bindings.py > lib.py```
+  
+  By default bindings.py prints Python code to stdout
+
+3. Copy contents of cffi_header.h into ffi.cdef('''<paste into this string>''') (you can find it at the top of lib.py file)
+
+4. Copy generated lib.py to pylibui/libui. I strongly recommend checking lib.py with any good IDE (PyCharm), because there's still some issues with auto binding generation - duplicate structs, uiInitOptions tries to convert char NULL to string, uiAllocControl is not needed, some structs may be missing (fill an issue if any).
 
 ## Run Tests
 
