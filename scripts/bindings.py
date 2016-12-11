@@ -14,22 +14,15 @@ import os
 ffi = FFI()
 ffi.cdef('''
 // paste actual header here''')
-if os.path.exists('sharedlibs'):
-    current = os.path.dirname(os.path.realpath(__file__))
-    path = os.path.join(current, 'sharedlibs')
-    import platform
-    if platform.system() == 'Linux':
-      library = os.path.join(path, 'libui.so')
-    elif platform.system() == 'Darwin':
-      library = os.path.join(path, 'libui.dylib')
-    elif platform.system() == 'Windows':
-      library = os.path.join(path, 'libui.dll')
-    else:
-      raise RuntimeError('Unsupported platform')
+current = os.path.dirname(os.path.realpath(__file__))
+if platform.system() == 'Linux':
+    library = os.path.join(current, 'libui.so')
+elif platform.system() == 'Darwin':
+    library = os.path.join(current, 'libui.dylib')
+elif platform.system() == 'Windows':
+    library = os.path.join(current, 'libui.dll')
 else:
-    import sysconfig
-    from ctypes.util import find_library
-    library = os.path.join(sysconfig.get_config_var('LIBDIR'), find_library('ui'))
+    raise RuntimeError('Unsupported platform')
 lib = ffi.dlopen(library)
 callbacks = []
 """
