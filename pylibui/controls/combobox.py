@@ -8,24 +8,25 @@ from .control import Control
 
 
 class Combobox(Control):
-
-    def __init__(self, items=[]):
+    def __init__(self, items=None):
         """
         Creates a new combobox.
 
         """
         super().__init__()
+        if items is None:
+            items = []
+        self.items = items
         self.control = libui.uiNewCombobox()
 
         for item in items:
             self.append(item)
 
-        def handlerOnSelected(combobox, data):
-            self.onSelected(data)
-            return None
+        def on_selected(combobox, data):
+            self.on_selected(data)
 
         self.selectedHandler = libui.uiComboboxOnSelected(
-            self.control, handlerOnSelected, None)
+            self.control, on_selected, None)
 
     def append(self, text):
         """
@@ -36,6 +37,7 @@ class Combobox(Control):
         """
         libui.uiComboboxAppend(self.control, text)
 
+    @property
     def selected(self):
         """
         Returns index of the selected item.
@@ -44,7 +46,8 @@ class Combobox(Control):
         """
         return libui.uiComboboxSelected(self.control)
 
-    def setSelected(self, n):
+    @selected.setter
+    def selected(self, n):
         """
         Sets selected item.
 
@@ -53,7 +56,7 @@ class Combobox(Control):
         """
         libui.uiComboboxSetSelected(self.control, n)
 
-    def onSelected(self, data):
+    def on_selected(self, data):
         """
         Executes when an item in combobox selected.
 

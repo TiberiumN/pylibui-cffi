@@ -8,18 +8,18 @@ from pylibui.controls import Window, VerticalSeparator
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
+
 
 app = App()
 
 window = MyWindow('Window', 800, 600)
-window.setMargined(True)
+window.margined = True
 
 separator = VerticalSeparator()
-window.setChild(separator)
+window.set_child(separator)
 
 window.show()
 

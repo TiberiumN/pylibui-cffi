@@ -12,34 +12,32 @@ from pylibui.controls import (Window, Entry, SearchEntry, PasswordEntry,
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 class MyEntry(Entry):
-
-    def onChanged(self, data):
+    def on_changed(self, data):
         print('entry changed!')
 
 
 app = App()
 
 window = MyWindow('Entry example')
-window.setMargined(True)
+window.margined = True
 
 entry = MyEntry()
 search_entry = SearchEntry()
 password_entry = PasswordEntry()
 
 vbox = VerticalBox()
-vbox.setPadded(True)
+vbox.padded = True
 vbox.append(entry)
 vbox.append(search_entry)
 vbox.append(password_entry)
 
-window.setChild(vbox)
+window.set_child(vbox)
 window.show()
 
 app.start()

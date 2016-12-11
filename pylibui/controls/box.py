@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Box(Control):
-
     def __init__(self):
         """
         Creates a new empty box.
@@ -39,7 +38,8 @@ class Box(Control):
         self.children[index].destroy()
         del self.children[index]
 
-    def getPadded(self):
+    @property
+    def padded(self):
         """
         Returns whether the box is padded.
 
@@ -47,7 +47,8 @@ class Box(Control):
         """
         return bool(libui.uiBoxPadded(self.control))
 
-    def setPadded(self, padded):
+    @padded.setter
+    def padded(self, padded):
         """
         Sets whether the box is padded.
 
@@ -58,7 +59,6 @@ class Box(Control):
 
 
 class HorizontalBox(Box):
-
     def __init__(self):
         """
         Creates an empty horizontal box.
@@ -69,7 +69,6 @@ class HorizontalBox(Box):
 
 
 class VerticalBox(Box):
-
     def __init__(self):
         """
         Creates an empty vertical box.

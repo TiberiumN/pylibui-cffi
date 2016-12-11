@@ -8,7 +8,6 @@ from .control import Control
 
 
 class ProgressBar(Control):
-
     def __init__(self):
         """
         Creates a new progress bar.
@@ -17,7 +16,17 @@ class ProgressBar(Control):
         super().__init__()
         self.control = libui.uiNewProgressBar()
 
-    def setValue(self, value):
+    @property
+    def value(self):
+        """
+        Returns the value of the progress bar.
+
+        :return: int
+        """
+        return libui.uiProgressBarValue(self.control)
+
+    @value.setter
+    def value(self, value):
         """
         Sets the value of the progress bar.
 
@@ -25,11 +34,3 @@ class ProgressBar(Control):
         :return: None
         """
         libui.uiProgressBarSetValue(self.control, value)
-
-    def getValue(self):
-        """
-        Returns the value of the progress bar.
-
-        :return: int
-        """
-        return libui.uiProgressBarValue(self.control)

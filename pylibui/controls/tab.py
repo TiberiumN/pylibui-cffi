@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Tab(Control):
-
     def __init__(self):
         """
         Creates a new tab.
@@ -26,9 +25,9 @@ class Tab(Control):
         """
         libui.uiTabAppend(self.control, name, control.pointer())
 
-    def insertAt(self, name, before, control):
+    def insert_at(self, name, before, control):
         """
-        Deletes a control from the tab.
+        Inserts a control to the tab.
 
         :param name: str
         :param before: int
@@ -47,7 +46,16 @@ class Tab(Control):
         """
         libui.uiTabDelete(self.control, index)
 
-    def setMargined(self, page, margined):
+    def get_margined(self, page):
+        """
+        Returns whether the tab's page is margined or not.
+
+        :param page: int
+        :return: bool
+        """
+        return bool(libui.uiTabMargined(self.control, page))
+
+    def set_margined(self, page, margined):
         """
         Sets whether the tab's page is margined or not.
 
@@ -57,16 +65,7 @@ class Tab(Control):
         """
         libui.uiTabSetMargined(self.control, page, int(margined))
 
-    def getMargined(self, page):
-        """
-        Returns whether the tab's page is margined or not.
-
-        :param page: int
-        :return: bool
-        """
-        return bool(libui.uiTabMargined(self.control, page))
-
-    def getNumPages(self):
+    def get_pages_num(self):
         """
         Returns the number of pages in the tab.
 

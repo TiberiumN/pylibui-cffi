@@ -8,16 +8,15 @@ from pylibui.controls import Window, Tab, HorizontalBox, Label
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 app = App()
 
 window = MyWindow('Window', 400, 300)
-window.setMargined(True)
+window.margined = True
 
 tab = Tab()
 
@@ -31,14 +30,14 @@ tabPage1.append(labelPage1)
 tabPage2.append(labelPage2)
 
 tab.append("Page 1", tabPage1)
-tab.setMargined(0, True)
+tab.set_margined(0, True)
 
 tab.append("Page 2", tabPage2)
-tab.setMargined(1, False)
+tab.set_margined(1, False)
 
-print("Number of pages: " + str(tab.getNumPages()))
+print("Number of pages: " + str(tab.get_pages_num()))
 
-window.setChild(tab)
+window.set_child(tab)
 
 window.show()
 

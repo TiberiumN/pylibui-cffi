@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Spinbox(Control):
-
     def __init__(self, min_value, max_value):
         """
         Creates a new spinbox.
@@ -20,13 +19,22 @@ class Spinbox(Control):
         self.control = libui.uiNewSpinbox(min_value, max_value)
 
         def handler(window, data):
-            self.onChanged(data)
-            return None
+            self.on_changed(data)
 
         self.changedHandler = libui.uiSpinboxOnChanged(self.control, handler,
                                                        None)
 
-    def setValue(self, value):
+    @property
+    def value(self):
+        """
+        Returns the value of the spinbox.
+
+        :return: int
+        """
+        return libui.uiSpinboxValue(self.control)
+
+    @value.setter
+    def value(self, value):
         """
         Sets the value of the spinbox.
 
@@ -35,15 +43,7 @@ class Spinbox(Control):
         """
         libui.uiSpinboxSetValue(self.control, value)
 
-    def getValue(self):
-        """
-        Returns the value of the spinbox.
-
-        :return: int
-        """
-        return libui.uiSpinboxValue(self.control)
-
-    def onChanged(self, data):
+    def on_changed(self, data):
         """
         Executes when spinbox's value change.
 

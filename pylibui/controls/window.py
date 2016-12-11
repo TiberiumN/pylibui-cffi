@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Window(Control):
-
     def __init__(self, title, width=800, height=600, menuBar=True):
         """
         Creates a new window.
@@ -19,23 +18,25 @@ class Window(Control):
         :param menuBar: if has menu bar
         """
         super().__init__()
+        self.width = width
+        self.height = height
         self.control = libui.uiNewWindow(title, width, height, int(menuBar))
 
         def handler(window, data):
-            self.onClose(data)
+            self.on_close(data)
             return 0
 
         self.closeHandler = libui.uiWindowOnClosing(self.control, handler,
                                                     None)
 
         def handlerOnContentSizeChanged(window, data):
-            self.onContentSizeChange(data)
-            return None
+            self.on_content_size_changed(data)
 
         self.contentSizeChangedHandler = libui.uiWindowOnContentSizeChanged(
             self.control, handlerOnContentSizeChanged, None)
 
-    def getTitle(self):
+    @property
+    def title(self):
         """
         Returns the window's title.
 
@@ -43,7 +44,8 @@ class Window(Control):
         """
         return libui.uiWindowTitle(self.control)
 
-    def setTitle(self, title):
+    @title.setter
+    def title(self, title):
         """
         Sets the window's title.
 
@@ -52,15 +54,17 @@ class Window(Control):
         """
         libui.uiWindowSetTitle(self.control, title)
 
-    def getContentSize(self):
+    @property
+    def content_size(self):
         """
         Returns the window's content size.
 
         :return: tuple
         """
-        return libui.uiWindowContentSize(self.control)
+        return libui.uiWindowContentSize(self.control, self.width, self.height)
 
-    def setContentSize(self, width, height):
+    @content_size.setter
+    def content_size(self, *values):
         """
         Sets the window's content size.
 
@@ -68,9 +72,10 @@ class Window(Control):
         :param height: int
         :return: None
         """
-        libui.uiWindowSetContentSize(self.control, width, height)
+        libui.uiWindowSetContentSize(self.control, *values)
 
-    def getFullscreen(self):
+    @property
+    def fullscreen(self):
         """
         Returns whether the window is in fullscreen.
 
@@ -78,7 +83,8 @@ class Window(Control):
         """
         return bool(libui.uiWindowFullscreen(self.control))
 
-    def setFullscreen(self, fullscreen):
+    @fullscreen.setter
+    def fullscreen(self, fullscreen):
         """
         Sets whether the window is in fullscreen.
 
@@ -87,7 +93,7 @@ class Window(Control):
         """
         libui.uiWindowSetFullscreen(self.control, int(fullscreen))
 
-    def onContentSizeChange(self, data):
+    def on_content_size_changed(self, data):
         """
         Executes when window's content size changed.
 
@@ -96,7 +102,7 @@ class Window(Control):
         """
         pass
 
-    def onClose(self, data):
+    def on_close(self, data):
         """
         Executes when window is closing.
 
@@ -105,7 +111,8 @@ class Window(Control):
         """
         self.destroy()
 
-    def getBorderless(self):
+    @property
+    def borderless(self):
         """
         Returns whether the window is borderless.
 
@@ -113,7 +120,8 @@ class Window(Control):
         """
         return bool(libui.uiWindowBorderless(self.control))
 
-    def setBorderless(self, borderless):
+    @borderless.setter
+    def borderless(self, borderless):
         """
         Sets whether the window is borderless.
 
@@ -122,7 +130,7 @@ class Window(Control):
         """
         libui.uiWindowSetBorderless(self.control, int(borderless))
 
-    def setChild(self, child):
+    def set_child(self, child):
         """
         Sets a control as child of the window.
 
@@ -131,7 +139,8 @@ class Window(Control):
         """
         libui.uiWindowSetChild(self.control, child.pointer())
 
-    def getMargined(self):
+    @property
+    def margined(self):
         """
         Returns whether the window is margined or not.
 
@@ -139,7 +148,8 @@ class Window(Control):
         """
         return bool(libui.uiWindowMargined(self.control))
 
-    def setMargined(self, margined):
+    @margined.setter
+    def margined(self, margined):
         """
         Sets whether the window is margined or not.
 

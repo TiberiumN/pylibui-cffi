@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Checkbox(Control):
-
     def __init__(self, text):
         """
         Creates a new checkbox.
@@ -18,13 +17,22 @@ class Checkbox(Control):
         self.control = libui.uiNewCheckbox(text)
 
         def handler(window, data):
-            self.onToggled(data)
-            return None
+            self.on_toggle(data)
 
         self.toggledHandler = libui.uiCheckboxOnToggled(self.control, handler,
                                                         None)
 
-    def setText(self, text):
+    @property
+    def text(self):
+        """
+        Returns the text of the checkbox.
+
+        :return: string
+        """
+        return libui.uiCheckboxText(self.control)
+
+    @text.setter
+    def text(self, text):
         """
         Sets the text of the checkbox.
 
@@ -33,15 +41,17 @@ class Checkbox(Control):
         """
         libui.uiCheckboxSetText(self.control, text)
 
-    def getText(self):
+    @property
+    def checked(self):
         """
-        Returns the text of the checkbox.
+        Gets whether the checkbox is checked or not.
 
-        :return: string
+        :return: bool
         """
-        return libui.uiCheckboxText(self.control)
+        return bool(libui.uiCheckboxChecked(self.control))
 
-    def setChecked(self, checked):
+    @checked.setter
+    def checked(self, checked):
         """
         Sets whether the checkbox is checked or not.
 
@@ -50,15 +60,7 @@ class Checkbox(Control):
         """
         libui.uiCheckboxSetChecked(self.control, int(checked))
 
-    def getChecked(self):
-        """
-        Sets whether the checkbox is checked or not.
-
-        :return: bool
-        """
-        return bool(libui.uiCheckboxChecked(self.control))
-
-    def onToggled(self, data):
+    def on_toggle(self, data):
         """
         Executes when the checkbox is toggled.
 

@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Button(Control):
-
     def __init__(self, text):
         """
         Creates a new button.
@@ -19,13 +18,22 @@ class Button(Control):
         self.control = libui.uiNewButton(text)
 
         def handler(window, data):
-            self.onClick(data)
-            return None
+            self.on_click(data)
 
         self.clickHandler = libui.uiButtonOnClicked(self.control, handler,
                                                     None)
 
-    def setText(self, text):
+    @property
+    def text(self):
+        """
+        Returns the text of the button
+
+        :return: string
+        """
+        return libui.uiButtonText(self.control)
+
+    @text.setter
+    def text(self, text):
         """
         Sets the text of the button.
 
@@ -34,15 +42,7 @@ class Button(Control):
         """
         libui.uiButtonSetText(self.control, text)
 
-    def getText(self):
-        """
-        Returns the text of the button
-
-        :return: string
-        """
-        return libui.uiButtonText(self.control)
-
-    def onClick(self, data):
+    def on_click(self, data):
         """
         Executes when the button is clicked.
 

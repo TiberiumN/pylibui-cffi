@@ -8,21 +8,21 @@ from .control import Control
 
 
 class RadioButtons(Control):
-
-    def __init__(self, items=[]):
+    def __init__(self, items=None):
         """
         Creates a new radio buttons.
 
         """
         super().__init__()
+        if items is None:
+            items = []
         self.control = libui.uiNewRadioButtons()
 
         for item in items:
             self.append(item)
 
         def handlerOnSelected(radio_buttons, data):
-            self.onSelected(data)
-            return None
+            self.on_select(data)
 
         self.selectedHandler = libui.uiRadioButtonsOnSelected(
             self.control, handlerOnSelected, None)
@@ -36,6 +36,7 @@ class RadioButtons(Control):
         """
         libui.uiRadioButtonsAppend(self.control, text)
 
+    @property
     def selected(self):
         """
         Returns index of the selected item.
@@ -44,7 +45,8 @@ class RadioButtons(Control):
         """
         return libui.uiRadioButtonsSelected(self.control)
 
-    def setSelected(self, n):
+    @selected.setter
+    def selected(self, n):
         """
         Sets selected item.
 
@@ -53,7 +55,7 @@ class RadioButtons(Control):
         """
         libui.uiRadioButtonsSetSelected(self.control, n)
 
-    def onSelected(self, data):
+    def on_select(self, data):
         """
         Executes when an item in radio buttons is selected.
 

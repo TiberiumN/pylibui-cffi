@@ -8,20 +8,19 @@ from pylibui.controls import Window, ProgressBar
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 app = App()
 
 window = MyWindow('Progress bar example')
-window.setMargined(True)
+window.margined = True
 
 progressbar = ProgressBar()
-progressbar.setValue(60)
-window.setChild(progressbar)
+progressbar.value = 60
+window.set_child(progressbar)
 
 window.show()
 

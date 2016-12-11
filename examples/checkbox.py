@@ -8,27 +8,25 @@ from pylibui.controls import Window, Checkbox
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 class MyCheckbox(Checkbox):
-
-    def onToggled(self, data):
+    def on_toggle(self, data):
         print('checkbox toggled!')
 
 
 app = App()
 
 window = MyWindow('Checkbox example')
-window.setMargined(True)
+window.margined = True
 
 checkbox = MyCheckbox('a checkbox!')
-checkbox.setText('a checkbox')
-checkbox.setChecked(True)
-window.setChild(checkbox)
+checkbox.text = 'a checkbox'
+checkbox.checked = True
+window.set_child(checkbox)
 
 window.show()
 

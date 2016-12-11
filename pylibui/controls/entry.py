@@ -8,8 +8,17 @@ from .control import Control
 
 
 class BaseEntry(Control):
+    @property
+    def text(self):
+        """
+        Returns the text of the entry.
 
-    def setText(self, text):
+        :return: string
+        """
+        return libui.uiEntryText(self.control)
+
+    @text.setter
+    def text(self, text):
         """
         Sets the text of the entry.
 
@@ -18,15 +27,17 @@ class BaseEntry(Control):
         """
         libui.uiEntrySetText(self.control, text)
 
-    def getText(self):
+    @property
+    def read_only(self):
         """
-        Returns the text of the entry.
+        Returns whether the entry is read only or not.
 
-        :return: string
+        :return: bool
         """
-        return libui.uiEntryText(self.control)
+        return bool(libui.uiEntryReadOnly(self.control))
 
-    def setReadOnly(self, read_only):
+    @read_only.setter
+    def read_only(self, read_only):
         """
         Sets whether the entry is read only or not.
 
@@ -35,15 +46,7 @@ class BaseEntry(Control):
         """
         libui.uiEntrySetReadOnly(self.control, int(read_only))
 
-    def getReadOnly(self):
-        """
-        Returns whether the entry is read only or not.
-
-        :return: bool
-        """
-        return bool(libui.uiEntryReadOnly(self.control))
-
-    def onChanged(self, data):
+    def on_changed(self, data):
         """
         Executes when the entry is changed.
 
@@ -54,7 +57,6 @@ class BaseEntry(Control):
 
 
 class Entry(BaseEntry):
-
     def __init__(self):
         """
         Creates a new entry.
@@ -64,7 +66,7 @@ class Entry(BaseEntry):
         self.control = libui.uiNewEntry()
 
         def handler(window, data):
-            self.onChanged(data)
+            self.on_changed(data)
             return None
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
@@ -72,7 +74,6 @@ class Entry(BaseEntry):
 
 
 class PasswordEntry(Entry):
-
     def __init__(self):
         """
         Creates a new password entry.
@@ -82,15 +83,13 @@ class PasswordEntry(Entry):
         self.control = libui.uiNewPasswordEntry()
 
         def handler(window, data):
-            self.onChanged(data)
-            return None
+            self.on_changed(data)
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
                                                      None)
 
 
 class SearchEntry(Entry):
-
     def __init__(self):
         """
         Creates a new search entry.
@@ -100,8 +99,7 @@ class SearchEntry(Entry):
         self.control = libui.uiNewSearchEntry()
 
         def handler(window, data):
-            self.onChanged(data)
-            return None
+            self.on_changed(data)
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
                                                      None)

@@ -8,7 +8,6 @@ from .control import Control
 
 
 class DateTimePicker(Control):
-
     def __init__(self):
         """
         Creates a new date/time picker.
@@ -19,7 +18,6 @@ class DateTimePicker(Control):
 
 
 class DatePicker(Control):
-
     def __init__(self):
         """
         Creates a new date picker.
@@ -30,7 +28,6 @@ class DatePicker(Control):
 
 
 class TimePicker(Control):
-
     def __init__(self):
         """
         Creates a new time picker.

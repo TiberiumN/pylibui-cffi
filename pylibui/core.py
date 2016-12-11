@@ -7,7 +7,6 @@ from . import libui
 
 
 class App:
-
     def __init__(self):
         """
         Creates a new pylibui app.

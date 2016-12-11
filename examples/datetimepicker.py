@@ -9,20 +9,19 @@ from pylibui.controls import (Window, VerticalBox, DateTimePicker, DatePicker,
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 app = App()
 
 window = MyWindow('Window', 800, 600)
-window.setMargined(True)
+window.margined = True
 
 vbox = VerticalBox()
-vbox.setPadded(True)
-window.setChild(vbox)
+vbox.padded = True
+window.set_child(vbox)
 
 vbox.append(DateTimePicker())
 vbox.append(DatePicker())

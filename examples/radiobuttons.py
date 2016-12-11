@@ -8,33 +8,30 @@ from pylibui.controls import Window, RadioButtons, VerticalBox
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 class MyRadioButtons(RadioButtons):
-
-    def onSelected(self, data):
-        print(self.selected())
+    def on_select(self, data):
+        print(self.selected)
 
 
 app = App()
 
 window = MyWindow('Window', 800, 600)
-window.setMargined(True)
+window.margined = True
 
 colors = ['Blue', 'Yellow', 'Green', 'Red']
 radio_buttons = MyRadioButtons(colors)
 radio_buttons.append('Pink')
-radio_buttons.setSelected(1)
+radio_buttons.selected = 1
 
 vbox = VerticalBox()
-vbox.setPadded(True)
+vbox.padded = True
 vbox.append(radio_buttons)
-window.setChild(vbox)
-
+window.set_child(vbox)
 
 window.show()
 

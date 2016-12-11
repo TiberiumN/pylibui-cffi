@@ -8,7 +8,6 @@ from tests.utils import WindowTestCase
 
 
 class SliderTest(WindowTestCase):
-
     def setUp(self):
         super().setUp()
         self.slider = Slider(0, 100)
@@ -17,10 +16,10 @@ class SliderTest(WindowTestCase):
         """Tests the sliders's `value` initial value is the first parameter
         passed to constructor."""
         slider = Slider(10, 110)
-        self.assertEqual(slider.getValue(), 10)
+        self.assertEqual(slider.value, 10)
 
     def test_value_can_be_changed(self):
         """Tests the slider's `value` attribute can be changed."""
         value = 30
-        self.slider.setValue(value)
-        self.assertEqual(self.slider.getValue(), value)
+        self.slider.value = value
+        self.assertEqual(self.slider.value, value)

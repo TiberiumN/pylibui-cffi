@@ -8,7 +8,6 @@ from .control import Control
 
 
 class HorizontalSeparator(Control):
-
     def __init__(self):
         """
         Creates a new horizontal separator.
@@ -17,8 +16,8 @@ class HorizontalSeparator(Control):
         super().__init__()
         self.control = libui.uiNewHorizontalSeparator()
 
-class VerticalSeparator(Control):
 
+class VerticalSeparator(Control):
     def __init__(self):
         """
         Creates a new vertical separator.

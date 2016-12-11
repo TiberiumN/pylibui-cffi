@@ -7,7 +7,6 @@ from pylibui import libui
 
 
 class Control:
-
     def __init__(self, control=None):
         """
         Creates a new Control.
@@ -23,7 +22,7 @@ class Control:
         """
         return libui.ffi.cast('uiControl *', self.control)
 
-    def getVisible(self):
+    def visible(self):
         """
         Returns whether the control is visible.
 
@@ -47,7 +46,8 @@ class Control:
         """
         libui.uiControlHide(self.pointer())
 
-    def getEnabled(self):
+    @property
+    def enabled(self):
         """
         Returns whether the control is enabled.
 
@@ -55,7 +55,8 @@ class Control:
         """
         return bool(libui.uiControlEnabled(self.pointer()))
 
-    def setEnabled(self, enabled):
+    @enabled.setter
+    def enabled(self, enabled):
         """
         Enables or disables the control.
 

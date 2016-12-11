@@ -8,28 +8,26 @@ from pylibui.controls import Window, Button
 
 
 class MyWindow(Window):
-
-    def onClose(self, data):
-        super().onClose(data)
+    def on_close(self, data):
+        super().on_close(data)
         app.stop()
 
 
 class MyButton(Button):
-
-    def onClick(self, data):
-        if self.getText() == 'click me':
-            self.setText('click me again')
+    def on_click(self, data):
+        if self.text == 'click me':
+            self.text = 'click me again'
         else:
-            self.setText('click me')
+            self.text = 'click me'
 
 
 app = App()
 
 window = MyWindow('Window', 800, 600)
-window.setMargined(True)
+window.margined = True
 
 button = MyButton('click me')
-window.setChild(button)
+window.set_child(button)
 
 window.show()
 

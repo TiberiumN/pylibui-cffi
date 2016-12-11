@@ -8,7 +8,6 @@ from .control import Control
 
 
 class Group(Control):
-
     def __init__(self, title):
         """
         Creates a new group.
@@ -18,7 +17,8 @@ class Group(Control):
         super().__init__()
         self.control = libui.uiNewGroup(title)
 
-    def getTitle(self):
+    @property
+    def title(self):
         """
         Returns the title of the group.
 
@@ -26,7 +26,8 @@ class Group(Control):
         """
         return libui.uiGroupTitle(self.control)
 
-    def setTitle(self, title):
+    @title.setter
+    def title(self, title):
         """
         Sets the title of the group.
 
@@ -35,7 +36,7 @@ class Group(Control):
         """
         libui.uiGroupSetTitle(self.control, title)
 
-    def setChild(self, child):
+    def set_child(self, child):
         """
         Sets a control as child of the group.
 
@@ -44,7 +45,8 @@ class Group(Control):
         """
         libui.uiGroupSetChild(self.control, child.pointer())
 
-    def getMargined(self):
+    @property
+    def margined(self):
         """
         Returns whether the group is margined.
 
@@ -52,7 +54,8 @@ class Group(Control):
         """
         return bool(libui.uiGroupMargined(self.control))
 
-    def setMargined(self, margined):
+    @margined.setter
+    def margined(self, margined):
         """
         Sets whether the group is margined.
 
