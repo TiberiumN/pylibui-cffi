@@ -22,7 +22,7 @@ class RadioButtons(Control):
 
         def handlerOnSelected(radio_buttons, data):
             self.onSelected(data)
-            return 0
+            return None
 
         self.selectedHandler = libui.uiRadioButtonsOnSelected(
             self.control, handlerOnSelected, None)

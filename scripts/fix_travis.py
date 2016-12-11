@@ -1,5 +1,4 @@
-import os, sysconfig, sys, subprocess
-from ctypes.util import find_library
+import os, sysconfig, subprocess
 
 # search for libui
 link = None

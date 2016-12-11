@@ -19,7 +19,7 @@ class Checkbox(Control):
 
         def handler(window, data):
             self.onToggled(data)
-            return 0
+            return None
 
         self.toggledHandler = libui.uiCheckboxOnToggled(self.control, handler,
                                                         None)

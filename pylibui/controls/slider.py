@@ -21,7 +21,7 @@ class Slider(Control):
 
         def handler(window, data):
             self.onChanged(data)
-            return 0
+            return None
 
         self.changedHandler = libui.uiSliderOnChanged(self.control, handler,
                                                       None)

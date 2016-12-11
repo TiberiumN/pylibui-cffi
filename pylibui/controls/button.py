@@ -20,7 +20,7 @@ class Button(Control):
 
         def handler(window, data):
             self.onClick(data)
-            return 0
+            return None
 
         self.clickHandler = libui.uiButtonOnClicked(self.control, handler,
                                                     None)

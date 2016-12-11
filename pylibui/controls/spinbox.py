@@ -21,7 +21,7 @@ class Spinbox(Control):
 
         def handler(window, data):
             self.onChanged(data)
-            return 0
+            return None
 
         self.changedHandler = libui.uiSpinboxOnChanged(self.control, handler,
                                                        None)

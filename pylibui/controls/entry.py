@@ -65,7 +65,7 @@ class Entry(BaseEntry):
 
         def handler(window, data):
             self.onChanged(data)
-            return 0
+            return None
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
                                                      None)
@@ -83,7 +83,7 @@ class PasswordEntry(Entry):
 
         def handler(window, data):
             self.onChanged(data)
-            return 0
+            return None
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
                                                      None)
@@ -101,7 +101,7 @@ class SearchEntry(Entry):
 
         def handler(window, data):
             self.onChanged(data)
-            return 0
+            return None
 
         self.changedHandler = libui.uiEntryOnChanged(self.control, handler,
                                                      None)

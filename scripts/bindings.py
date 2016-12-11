@@ -1,343 +1,209 @@
-"""
- Generate the basic structure of pylibui binding files
- from the libui header file.
+from pycparser import c_ast, parse_file
 
- The output of this script is not guaranteed to be correct
- python scripts but are nevertheless better than writing
- everything manually.
+c_to_python = {
+    "double": "float",
+    "void": "ffi.NULL",
+    "char": "str",
 
-"""
-
-from urllib import request
-import sys
-
-
-def return_lines(filename, start, end):
-    """
-    Returns only the lines of a file between start and end.
-
-    :param filename: the filename
-    :param start: first line
-    :param end: last line
-    :return: list of lines
-    """
-
-    lines = []
-
-    with open(filename, 'r') as fin:
-
-        for lineno, line in enumerate(fin):
-            if start <= lineno <= end:
-                lines.append(line.strip())
-
-    return lines
-
-
-def generic_head():
-    """
-    Generates a generic header of a pylibui wrapper file.
-
-    :return: string
-    """
-
-    return (
-        '"""\n'
-        ' Python wrapper for libui.\n'
-        '\n'
-        '"""\n'
-        '\n'
-        'import ctypes\n'
-        'from . import clibui\n\n\n'
-    )
-
-
-def generic_struct(name):
-    """
-    Wraps a C struct in an empty ctypes class.
-
-    :param name: the struct name
-    :return: string
-    """
-
-    text = (
-        'class {name}(ctypes.Structure):\n'
-        '    """Wrapper for the {name} C struct."""\n'
-        '\n'
-        '    pass\n\n\n'
-    )
-
-    return text.format(name=name)
-
-
-def generic_cast(name):
-    """
-    Generates a function to cast pointers.
-
-    :param name: the pointer name
-    :return: string
-    """
-
-    text = (
-        'def {name}Pointer(obj):\n'
-        '    """\n'
-        '    Casts an object to {name} pointer type.\n'
-        '\n'
-        '    :param obj: a generic object\n'
-        '    :return: {name}\n'
-        '    """\n'
-        '\n'
-        '    return ctypes.cast(obj, ctypes.POINTER({name}))\n\n\n'
-    )
-
-    return text.format(name=name)
-
-
-def generic_function(function):
-    """
-    Generates a generic function from function declaration
-
-    :param function: function declaration
-    :return: string
-    """
-
-    signature = function
-    rtype, function = function.split(' ', 1)
-    fname, fargs = function.split('(', 1)
-
-    fname = fname.replace('*', '')
-    fargs = fargs.replace(');', '')
-
-    text = (
-        '# - {signature}\n'
-        'def {fname}(*args):\n'
-        '    """\n'
-        '    Describe the function.\n'
-        '\n'
-        '    :param args: arguments\n'
-        '    :return: value\n'
-        '    """\n'
-        '\n'
-        '    # TODO\n'
-        '    return clibui.{fname}()\n\n\n'
-    )
-
-    return text.format(fname=fname, signature=signature, args=fargs)
-
-
-def parse_lines(lines):
-    """
-    Parses the lines of a header file.
-
-    :param lines: list of lines
-    :return: string
-    """
-
-    contents = generic_head()
-
-    for line in lines:
-
-        # Definition of structs
-        if line.startswith('typedef struct'):
-            name = line.split()[2].strip()
-            contents += generic_struct(name)
-
-        # Definition of pointer casts
-        elif line.startswith('#define') and '(this)' in line:
-            fname = line.split()[1].strip()
-            name = fname.split('(this)')[0]
-            contents += generic_cast(name)
-
-        # Functions
-        elif line.startswith('_UI_EXTERN'):
-            function = line.split(' ', 1)[1].strip()
-            contents += generic_function(function)
-
-    return contents
-
-
-def parse_content(filename, start, end):
-    """
-    Parses the content of the libui header file between the
-    start and end lines.
-
-    :param filename: libui header file
-    :param start: start line
-    :param end: end line
-    :return: string
-    """
-
-    lines = return_lines(filename, start, end)
-    return parse_lines(lines)
-
-
-def find_line(string, filename):
-    """
-    Returns the first line that includes the string.
-
-    :param string: the string
-    :param filename: libui header file
-    :return: int
-    """
-
-    lines = return_lines(filename, 0, 10000)
-
-    for index, line in enumerate(lines):
-        if string in line:
-            return index
-
-    return -1
-
-
-def parse_section(name, filename):
-    """
-    Parses a section of the libui header as defined in the
-    sections dictionary.
-
-    :param name: section name
-    :param filename: libui header file
-    :return: string
-    """
-
-    global sections
-    section = sections[name]
-
-    line_start = find_line(section[0], filename)
-    line_end = find_line(section[1], filename)
-
-    return parse_content(filename, line_start, line_end)
-
-
-def check_ui_h():
-    """
-    Downloads original ui.h file from andlabs' libui repository and compares
-    it with the local ui.h.
-
-    See https://github.com/joaoventura/pylibui/issues/40 for more information.
-
-    :return: None
-    """
-
-    ui_h_url = "https://raw.githubusercontent.com/andlabs/libui/master/ui.h"
-    print("Downloading ui.h...")
-    try:
-        req = request.urlopen(ui_h_url)
-    except:
-        req = None
-        print("Couldn't fetch original ui.h.")
-
-    if req:
-        original_ui_h = req.read().decode("UTF-8")
-        req.close()
-        print("Download successful. Comparing with local copy...")
-        fil = open("ui.h")
-        ui_h = fil.read()
-        fil.close()
-        if ui_h != original_ui_h:
-            print("ui.h is outdated. Please inform pylibui maintainers.")
-            exit(1)
-        else:
-            print("ui.h is up-to-date.")
-
-
-# You should regularly check the sections for the target 'ui.h' file.
-
-sections = {
-    'main': (
-        'typedef struct uiInitOptions',
-        '_UI_EXTERN void uiFreeText'
-    ),
-    'control': (
-        'typedef struct uiControl',
-        '_UI_EXTERN void uiUserBugCannotSetParentOnToplevel'
-    ),
-    'window': (
-        'typedef struct uiWindow',
-        '_UI_EXTERN uiWindow *uiNewWindow'
-    ),
-    'button': (
-        'typedef struct uiButton',
-        '_UI_EXTERN uiButton *uiNewButton'
-    ),
-    'box': (
-        'typedef struct uiBox',
-        '_UI_EXTERN uiBox *uiNewVerticalBox'
-    ),
-    'checkbox': (
-        'typedef struct uiCheckbox',
-        '_UI_EXTERN uiCheckbox *uiNewCheckbox'
-    ),
-    'entry': (
-        'typedef struct uiEntry',
-        '_UI_EXTERN uiEntry *uiNewSearchEntry'
-    ),
-    'label': (
-        'typedef struct uiLabel',
-        '_UI_EXTERN uiLabel *uiNewLabel'
-    ),
-    'tab': (
-        'typedef struct uiTab',
-        '_UI_EXTERN uiTab *uiNewTab'
-    ),
-    'group': (
-        'typedef struct uiGroup',
-        '_UI_EXTERN uiGroup *uiNewGroup'
-    ),
-    'spinbox': (
-        'typedef struct uiSpinbox',
-        '_UI_EXTERN uiSpinbox *uiNewSpinbox'
-    ),
-    'slider': (
-        'typedef struct uiSlider',
-        '_UI_EXTERN uiSlider *uiNewSlider'
-    ),
-    'progressbar': (
-        'typedef struct uiProgressBar',
-        '_UI_EXTERN uiProgressBar *uiNewProgressBar'
-    ),
-    'separator': (
-        'typedef struct uiSeparator',
-        '_UI_EXTERN uiSeparator *uiNewVerticalSeparator'
-    ),
-    'combobox': (
-        'typedef struct uiCombobox',
-        '_UI_EXTERN uiCombobox *uiNewCombobox'
-    ),
-    'editablecombobox': (
-        'typedef struct uiEditableCombobox',
-        '_UI_EXTERN uiEditableCombobox *uiNewEditableCombobox'
-    ),
-    'radiobuttons': (
-        'typedef struct uiRadioButtons',
-        '_UI_EXTERN uiRadioButtons *uiNewRadioButtons'
-    ),
-    'datetimepicker': (
-        'typedef struct uiDateTimePicker',
-        '_UI_EXTERN uiDateTimePicker *uiNewTimePicker'
-    ),
-    'multilineentry': (
-        'typedef struct uiMultilineEntry',
-        '_UI_EXTERN uiMultilineEntry *uiNewNonWrappingMultilineEntry'
-    ),
-    'menuitem': (
-        'typedef struct uiMenuItem',
-        '_UI_EXTERN void uiMenuItemSetChecked'
-    ),
-    'menu': (
-        'typedef struct uiMenu',
-        '_UI_EXTERN uiMenu *uiNewMenu'
-    ),
 }
 
-
-if len(sys.argv) == 2:
-    if sys.argv[1] == "download":
-        check_ui_h()
+HEADER = """from cffi import FFI
+import os
+# DO NOT EDIT THIS FILE
+# AUTO-GENERATED BY bindings.py
+ffi = FFI()
+ffi.cdef('''
+// paste actual header here''')
+if os.path.exists('sharedlibs'):
+    current = os.path.dirname(os.path.realpath(__file__))
+    path = os.path.join(current, 'sharedlibs')
+    import platform
+    if platform.system() == 'Linux':
+      library = os.path.join(path, 'libui.so')
+    elif platform.system() == 'Darwin':
+      library = os.path.join(path, 'libui.dylib')
+    elif platform.system() == 'Windows':
+      library = os.path.join(path, 'libui.dll')
     else:
-        section_name = sys.argv[1]
-        contents = parse_section(section_name, 'ui.h')
-        with open(section_name + ".py", "w") as f:
-            f.write(contents)
-        print("Bindings for", section_name, "created successfully.")
+      raise RuntimeError('Unsupported platform')
 else:
-    contents = parse_section("window", 'ui.h')
-    print(contents)
+    import sysconfig
+    from ctypes.util import find_library
+    library = os.path.join(sysconfig.get_config_var('LIBDIR'), find_library('ui'))
+lib = ffi.dlopen(library)
+callbacks = []
+"""
+
+FUNCTION_TEMPLATE = '''
+def {fname}({args}):
+    {extra}
+    return lib.{fname}({pure_args})
+'''
+
+CHAR_TYPE_FUNCTION_TEMPLATE = '''
+def {fname}({args}):
+    {extra}
+    return ffi.string(lib.{fname}({pure_args})).decode('utf-8')
+'''
+EXTRA_CALLBACK_TEMPLATE = '''ffi_callback = ffi.callback("{data}", callback)
+    callbacks.append(ffi_callback) # make sure our ffi callback will be alive
+'''
+
+EXTRA_STR_TO_BYTES_TEMPLATE = '{name} = {name}.encode()\n    '
+
+STRUCT_TEMPLATE = '''
+def {sname}(*args):
+    return ffi.new("{sname} *", args)
+'''
+import linecache
+
+
+class PythonFunction:
+    def __init__(self, args):
+        self.rtype, self.name, self.params = args
+
+    def generate_python(self):
+        pure_arguments = []
+        arguments = []
+        extra = ''
+        for param in self.params:
+            name, type = param
+            pure_name = name
+            if pure_name in pure_arguments:
+                # This is used to fix multiple arguments
+                # With one name
+                addit_info = str(pure_arguments.count(pure_name))
+                pure_name = pure_name + addit_info
+                name = name.replace(name, name + addit_info)
+            if type == 'char':
+                # We need to convert Python 3 str to bytes
+                # In order to pass it to libui
+                extra += EXTRA_STR_TO_BYTES_TEMPLATE.format(name=name)
+
+            if 'callback' in name:
+                coord = name.split(",")[1]
+                filename, lineno = coord.split(":")
+                line = linecache.getline(filename, int(lineno))
+                line = line.split(',', 1)[1].rsplit(',', 1)[0].strip()
+                pure_name = 'ffi_callback'
+                name = 'callback'
+                extra += EXTRA_CALLBACK_TEMPLATE.format(data=line)
+                type = 'void'
+            if pure_name == "data":
+                pure_name = 'ffi.NULL'
+            # Get python type corresponding to C type
+            py_type = c_to_python.get(type, type)
+            # Pure arguments - for calling C library via CFFI
+            pure_arguments.append(pure_name)
+            # Arguments contain type hints
+            arguments.append(name + ": " + py_type)
+        pure_args = ', '.join(pure_arguments)
+        args = ', '.join(arguments)
+        # We need convert C char to Python str if lib returns it
+        # Otherwise it won't work
+        if self.rtype == 'char':
+            print(CHAR_TYPE_FUNCTION_TEMPLATE.format(fname=self.name,
+                                                     args=args,
+                                                     extra=extra,
+                                                     pure_args=pure_args))
+        else:
+            print(FUNCTION_TEMPLATE.format(fname=self.name,
+                                           args=args,
+                                           extra=extra,
+                                           pure_args=pure_args))
+
+
+class StructVisitor(c_ast.NodeVisitor):
+    def __init__(self):
+        self.structs = []
+
+    def visit_Struct(self, struct: c_ast.Struct):
+        name = struct.name
+        print(STRUCT_TEMPLATE.format(sname=name))
+
+
+class FuncDeclVisitor(c_ast.NodeVisitor):
+    def __init__(self):
+        self.functions = []
+
+    def traverse_callback(self, callback: c_ast.FuncDecl):
+        params = self.traverse_params(callback.args)
+        type = callback.type.type.names[0]
+        return type, params
+
+    def traverse_params(self, params_list: c_ast.ParamList):
+        # List containing all params in a tuple : (arg name, type)
+        all_params = []
+        for param in params_list.params:
+            callback = None
+            if isinstance(param, c_ast.Typename):
+                if isinstance(param.type.type, c_ast.IdentifierType):
+                    continue
+                arg = param.type.type
+                arg.declname = str(param.type.type.type.names[0])
+            # If it's a type declaration
+            elif isinstance(param.type, c_ast.TypeDecl):
+                arg = param.type
+            # If it's a callback
+            elif isinstance(param.type.type, c_ast.FuncDecl):
+                # Traverse our callback
+                arg = param.type.type.type
+                callback = self.traverse_callback(param.type.type)
+
+            # PtrDecl or TypeDecl are the same when you're creating
+            # an ABI wrapper using CFFI
+            elif isinstance(param.type, c_ast.PtrDecl):
+                arg = param.type.type
+            else:
+                raise TypeError()
+            # Only for debug (never happened to me)
+            if not hasattr(arg, 'declname'):
+                arg.show()
+            # Append argument name and it's type
+            if callback:
+                # Append callback's params and types of them
+                # We need coord to generate cdef for CFFI later
+                all_params.append(("callback," + str(arg.coord), callback))
+            else:
+                all_params.append((arg.declname, arg.type.names[0]))
+        return all_params
+
+    def visit_FuncDecl(self, node: c_ast.FuncDecl):
+
+        if isinstance(node.type, c_ast.TypeDecl):
+            type_obj = node.type
+
+        elif isinstance(node.type.type, c_ast.TypeDecl):
+            type_obj = node.type.type
+
+        else:
+            # Just in case
+            raise TypeError()
+
+        func_name = type_obj.declname
+
+        type = type_obj.type.names[0]
+        all_params = self.traverse_params(node.args)
+        self.functions.append((type, func_name, all_params))
+
+
+def show_func_defs(filename):
+    ast = parse_file(filename)
+    funcs_visitor = FuncDeclVisitor()
+    funcs_visitor.visit(ast)
+    structs_visitor = StructVisitor()
+    structs_visitor.visit(ast)
+    funcs = funcs_visitor.functions
+    for func in funcs:
+        f = PythonFunction(func)
+        f.generate_python()
+
+
+# You MUST precompile ui.h header in order to parse it
+# Because otherwise it will contain includes, those are not
+# always can be parsed by pycparser
+# for example : gcc -E ui.h > ui_compiled.h
+if __name__ == "__main__":
+    filename = 'ui_compiled.h'
+    print(HEADER)
+    show_func_defs(filename)

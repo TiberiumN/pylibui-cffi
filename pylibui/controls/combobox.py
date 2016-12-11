@@ -22,7 +22,7 @@ class Combobox(Control):
 
         def handlerOnSelected(combobox, data):
             self.onSelected(data)
-            return 0
+            return None
 
         self.selectedHandler = libui.uiComboboxOnSelected(
             self.control, handlerOnSelected, None)

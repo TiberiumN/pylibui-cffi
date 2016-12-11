@@ -30,7 +30,7 @@ class Window(Control):
 
         def handlerOnContentSizeChanged(window, data):
             self.onContentSizeChange(data)
-            return 0
+            return None
 
         self.contentSizeChangedHandler = libui.uiWindowOnContentSizeChanged(
             self.control, handlerOnContentSizeChanged, None)
