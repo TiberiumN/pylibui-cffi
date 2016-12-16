@@ -1,8 +1,9 @@
 # pylibui
 
-Python3 wrapper for [libui](https://github.com/andlabs/libui/). It uses ctypes 
+Python 3 wrapper for [libui](https://github.com/andlabs/libui/). It uses cffi 
 to interface with the libui shared library.
 
+Also supports PyPy3
 ## Usage
 
 ```python    
