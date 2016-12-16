@@ -14,7 +14,7 @@ from pylibui.controls import Window
 class MyWindow(Window):
 
     def on_close(self, data):
-        super().onClose(data)
+        super().on_close(data)
         app.stop()
 
 
