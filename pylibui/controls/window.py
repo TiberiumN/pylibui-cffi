@@ -157,3 +157,15 @@ class Window(Control):
         :return: None
         """
         libui.uiWindowSetMargined(self.control, int(margined))
+
+    def open_file(self):
+        return libui.uiOpenFile(self.control)
+
+    def save_file(self):
+        return libui.uiSaveFile(self.control)
+
+    def show_message(self, title, description):
+        libui.uiMsgBox(self.control, title, description)
+
+    def show_error(self, title, description):
+        libui.uiMsgBoxError(self.control, title, description)

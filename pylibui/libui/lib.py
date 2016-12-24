@@ -910,14 +910,14 @@ def uiQuit():
 
 
 def uiQueueMain(callback: ffi.NULL, data: ffi.NULL):
-    ffi_callback = ffi.callback("void *data);", callback)
+    ffi_callback = ffi.callback("int (*f)(void *data)", callback)
     callbacks.append(ffi_callback)  # make sure our ffi callback will be alive
 
     return lib.uiQueueMain(ffi_callback, ffi.NULL)
 
 
 def uiOnShouldQuit(callback: ffi.NULL, data: ffi.NULL):
-    ffi_callback = ffi.callback("void *data);", callback)
+    ffi_callback = ffi.callback("int (*f)(void *data)", callback)
     callbacks.append(ffi_callback)  # make sure our ffi callback will be alive
 
     return lib.uiOnShouldQuit(ffi_callback, ffi.NULL)

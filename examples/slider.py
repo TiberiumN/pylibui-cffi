@@ -20,7 +20,7 @@ class MySlider(Slider):
 
 app = App()
 
-window = MyWindow('Window', 800, 600)
+window = MyWindow('Window', 300, 300)
 window.margined = True
 
 slider = MySlider(0, 100)

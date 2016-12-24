@@ -20,7 +20,7 @@ class MyRadioButtons(RadioButtons):
 
 app = App()
 
-window = MyWindow('Window', 800, 600)
+window = MyWindow('Window', 153, 94)
 window.margined = True
 
 colors = ['Blue', 'Yellow', 'Green', 'Red']
